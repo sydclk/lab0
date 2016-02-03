@@ -19,6 +19,10 @@
 #define LED2 2
 #define LED3 3
 
+//#define STATE1 1
+//#define STATE2 2
+//#define STATE3 3
+
 // DONE - Define states of the state machine 
 typedef enum stateTypeEnum{
     LED1ON, LED2ON, LED3ON
@@ -27,6 +31,7 @@ typedef enum stateTypeEnum{
 // DONE - TODO: Use volatile variables that change within interrupts
 
 volatile stateType LEDSTATE = LED1ON;
+//volatile int LEDSTATE = 1;
 
 int main() {
     SYSTEMConfigPerformance(10000000);    //Configures low-level system parameters for 10 MHz clock
@@ -37,18 +42,18 @@ int main() {
     initTimer1();
     
     while(1){
-
+/**/
         //DONE - TODO: Implement a state machine to create the desired functionality
-        switch(LEDSTATE){
+       switch(LEDSTATE){
             case LED1ON:
                 turnOnLED(LED1);
                 break;
             case LED2ON:
                 turnOnLED(LED2);
-                break;
-            case LED3ON:
-                turnOnLED(LED3);
-                break;    
+                break;   
+           case LED3ON:
+               turnOnLED(LED3);
+               break;
         }
     }
     return 0;
@@ -60,7 +65,8 @@ int main() {
 void __ISR(_TIMER_1_VECTOR, IPL7SRS) _T1Interupt(){
         IFS0bits.T1IF = 0; // put the flag down
         if(LEDSTATE == LED1ON) LEDSTATE = LED2ON;
-        if(LEDSTATE == LED2ON) LEDSTATE = LED3ON;
-        if(LEDSTATE == LED3ON) LEDSTATE = LED1ON;
+        else if(LEDSTATE == LED2ON) LEDSTATE = LED3ON;
+        else if(LEDSTATE == LED3ON) LEDSTATE = LED1ON;
+        
 }
     
